@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\ntitle: \"MSDS 6306 Lecture Assignment 11 S&P 500 Volatility Analysis\"\nauthor: \"Brian Coari\"\ndate: \"November 4, 2017\"\noutput: \n  html_document:\n    keep_md: true\n---\n\n```{r setup, include=FALSE}\nknitr::opts_chunk$set(echo = TRUE)\n```\n\n## Introduction\n\nThis analysis is to measure the volatility of the S&P 500 over time, and to guage the effects of measuring that volatility.\nTo perform this analysis we will take the records for all open stock trading days from Jan 1 1991 to Nov 3 2017, calculate the log returns of the S&P data we have collected, then calculating how much each entry differs from the standard deviation. We will then damped those differences by differing decay factors and plot the effects of theose differences.\n\n```{r SNP_Analysis}\n# Unit 11: Modeling Financial Data\n# Uncomment and install packages if you don't have it\n#install.packages(\"tseries\")\n\n# Description: Please fill out that this is for educational purposes and talk about what it's for!\n\nlibrary(tseries)\n\n## S&P 500 (^GSPC)\n###    SNP - SNP Real Time Price. Currency in USD\n\n# DONE: Download the data of SP500 '^gspc'.\nSNPdata <- get.hist.quote('^gspc',quote=\"Close\")\n\n# DONE: Calculate the log returns, which is the subtraction of log(lag(SNPdata)) and log(SNPdata)\nSNPret <- log(lag(SNPdata))-log(SNPdata)\n\n# DONE: Calculate volatility measure that is to multiply sd(SNPret),sqrt(250), 100\nSNPvol <- sd(SNPret) * sqrt(250) * 100\n\n\n```\n\n\n\n## Plot of Results\nIn the plots below we will print the volatility with the three different decay factors and color the lines according the the decay factor used. Decay Factor 10 = BLACK, Decay Factor 30 = RED, Decay Factor 100 = BLUE \n\n```{r SNP_Analysis_Plot}\n\n## Define getVol function for volatility\ngetVol <- function(d, logrets) {\n\tvar = 0\n\tlam = 0\n\tvarlist <- c()\n\n\tfor (r in logrets) {\n\t\tlam = lam*(1 - 1/d) + 1\n\t  var = (1 - 1/lam)*var + (1/lam)*r^2\n\t\tvarlist <- c(varlist, var)\n\t}\n\n\tsqrt(varlist)\n}\n\n# Calculate volatility over entire length of series for various three different decay factors: 10 30. 100\n\n# DONE: call getVol function with the parameters: 10,SNPret\nvolest <- getVol(10,SNPret)\n\n# DONE: call getVol function with the parameters: 30,SNPret\nvolest2 <- getVol(30,SNPret)\n\n# DONE: call getVol function with the parameters: 100,SNPret\nvolest3 <- getVol(100,SNPret)\n# Plot the results, overlaying the volatility curves on the data, just as was done in the S&P example.\nplot(volest,type=\"l\")\n\n# DONE: Add connected line segments for volest2 with the parameters: type=\"l\",col=\"red\"\nlines(volest2,type=\"l\", col=\"red\")\n\n# DONE: Add connected line segments for volest3 with the parameters: type=\"l\",col=\"blue\"\nlines(volest3,type=\"l\", col=\"blue\")\n\n```\n\n## Conclusion\n\nThere were many peaks in the volatility measure of the data, with the largest peaking appearing at around index 4700.\nAs the decay factors got larger, the volatility measured in the data set appeared to me \"smoothed out\", the peaks were not as high, most notably around the largest peak.\n\n",
+    "created" : 1509851704178.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "313172845",
+    "id" : "F7959B1C",
+    "lastKnownWriteTime" : 1509890005,
+    "last_content_update" : 1509890005350,
+    "path" : "~/GitHub/DdsLectureAssignment11/DdsLectureAssignment11.Rmd",
+    "project_path" : "DdsLectureAssignment11.Rmd",
+    "properties" : {
+        "last_setup_crc32" : "C8E9E5CEbb338d19",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
